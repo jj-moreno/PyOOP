@@ -1,4 +1,4 @@
-# import math
+import math
 
 
 class Segment(object):
@@ -9,6 +9,10 @@ class Segment(object):
     def __str__(self):
         return f"start_point: ({self.start_point.x}, { self.start_point.y})\n" \
                f"end_point: ({self.end_point.x}, { self.end_point.y})\n"
+
+    def length(self):
+        return math.sqrt(abs(self.end_point.x - self.start_point.x)**2
+                         + abs(self.end_point.y - self.start_point.y)**2)
 
 
 class Point(object):
@@ -22,3 +26,4 @@ if __name__ == '__main__':
     point2 = Point(2, 8)
     segment1 = Segment(point1, point2)
     print(segment1)
+    print(segment1.length())
