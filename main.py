@@ -21,6 +21,22 @@ class Point(object):
         self.y = y
 
 
+class Drunk(object):
+    possibilites = ['N', 'S', 'E', 'W']
+
+    def rand_move(self, coordinates):
+        # TODO:
+        return (0, 0)
+
+
+class Field(object):
+    start_loc = (0, 0)
+    curr_loc = (0, 0)
+
+    def __init__(self, drunk):
+        self.drunk = drunk
+
+
 def perform_trial(time, num_trials):
     print(time, num_trials)
 
