@@ -21,9 +21,14 @@ class Point(object):
         self.y = y
 
 
+def perform_trial(time, num_trials):
+    print(time, num_trials)
+
+
 if __name__ == '__main__':
-    point1 = Point(0, 6)
-    point2 = Point(2, 8)
-    segment1 = Segment(point1, point2)
-    print(segment1)
-    print(segment1.length())
+    # point1 = Point(0, 6)
+    # point2 = Point(2, 8)
+    # segment1 = Segment(point1, point2)
+    # print(segment1)
+    # print(segment1.length())
+    perform_trial(1000, 3)
