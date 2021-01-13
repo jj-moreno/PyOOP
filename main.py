@@ -1,4 +1,5 @@
 import math
+import random
 
 
 class Segment(object):
@@ -30,20 +31,29 @@ class Drunk(object):
     def __init__(self, start_loc):
         self.start_loc = start_loc
 
-    def rand_move(self, coordinates):
+    def rand_move(self, curr_loc):
         # TODO:
-        return (0, 0)
+        randmove = random.choice(self.possibilites)
+        if randmove == 'N':
+            return Point(curr_loc.x, curr_loc.y + 1)
+        elif randmove == 'S':
+            return Point(curr_loc.x, curr_loc.y - 1)
+        elif randmove == 'E':
+            return Point(curr_loc.x + 1, curr_loc.y)
+        else:  # must be W
+            return Point(curr_loc.x - 1, curr_loc.y)
 
     def __getattribute__(self, start_loc):
         return object.__getattribute__(self, start_loc)
 
 
 class Field(object):
+    distances = []
 
     def __init__(self, drunk):
         self.drunk = drunk
         self.start_loc = drunk.start_loc
-        self.curr_loc = self.start_loc
+        self.curr_loc = Point(0, 0)
 
 
 def perform_trial(time, num_trials):
