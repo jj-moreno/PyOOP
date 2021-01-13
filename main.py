@@ -20,21 +20,30 @@ class Point(object):
         self.x = x
         self.y = y
 
+    def __str__(self):
+        return f"({self.x}, {self.y})"
+
 
 class Drunk(object):
     possibilites = ['N', 'S', 'E', 'W']
+
+    def __init__(self, start_loc):
+        self.start_loc = start_loc
 
     def rand_move(self, coordinates):
         # TODO:
         return (0, 0)
 
+    def __getattribute__(self, start_loc):
+        return object.__getattribute__(self, start_loc)
+
 
 class Field(object):
-    start_loc = (0, 0)
-    curr_loc = (0, 0)
 
     def __init__(self, drunk):
         self.drunk = drunk
+        self.start_loc = drunk.start_loc
+        self.curr_loc = self.start_loc
 
 
 def perform_trial(time, num_trials):
@@ -47,4 +56,7 @@ if __name__ == '__main__':
     # segment1 = Segment(point1, point2)
     # print(segment1)
     # print(segment1.length())
+    start_location = Point(0, 0)
+    drunk = Drunk(start_location)
+    field = Field(drunk)
     perform_trial(1000, 3)
