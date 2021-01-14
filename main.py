@@ -31,17 +31,18 @@ class Drunk(object):
     def __init__(self, start_loc):
         self.start_loc = start_loc
 
-    def rand_move(self, curr_loc):
-        # TODO:
+    def rand_move(self, point):
+        x = point.x
+        y = point.y
         randmove = random.choice(self.possibilites)
         if randmove == 'N':
-            return Point(curr_loc.x, curr_loc.y + 1)
+            return Point(x, y + 1)
         elif randmove == 'S':
-            return Point(curr_loc.x, curr_loc.y - 1)
+            return Point(x, y - 1)
         elif randmove == 'E':
-            return Point(curr_loc.x + 1, curr_loc.y)
+            return Point(x + 1, y)
         else:  # must be W
-            return Point(curr_loc.x - 1, curr_loc.y)
+            return Point(x - 1, y)
 
     def __getattribute__(self, start_loc):
         return object.__getattribute__(self, start_loc)
@@ -53,11 +54,26 @@ class Field(object):
     def __init__(self, drunk):
         self.drunk = drunk
         self.start_loc = drunk.start_loc
-        self.curr_loc = Point(0, 0)
+        self.curr_loc = self.start_loc
+
+    def calc_dist_from_start(self, curr_loc):
+        self.curr_loc = curr_loc
+        distancetravel = Segment(self.start_loc, self.curr_loc).length()
+        self.distances.append(distancetravel)
+
+    def __getattribute__(self, distances):
+        return object.__getattribute__(self, distances)
 
 
 def perform_trial(time, num_trials):
-    print(time, num_trials)
+    start_location = Point(0, 0)
+    drunk = Drunk(start_location)
+    field = Field(drunk)
+    current_location = drunk.rand_move(start_location)
+    for t in range(time):
+        field.calc_dist_from_start(current_location)
+        current_location = drunk.rand_move(field.curr_loc)
+    print(field.distances)
 
 
 if __name__ == '__main__':
@@ -66,7 +82,4 @@ if __name__ == '__main__':
     # segment1 = Segment(point1, point2)
     # print(segment1)
     # print(segment1.length())
-    start_location = Point(0, 0)
-    drunk = Drunk(start_location)
-    field = Field(drunk)
-    perform_trial(1000, 3)
+    perform_trial(5, 3)
