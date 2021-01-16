@@ -71,8 +71,7 @@ class Trial(object):
         current_time = 0
         while current_time < self.alloted_time:
             self.drunk.randmove(self.drunk.drunk_loc)
-            drunk_loc = self.drunk.drunk_loc
-            distance_traveled = self.field.getdistance(drunk_loc)
+            distance_traveled = self.field.getdistance(self.drunk.drunk_loc)
             self.distances.append(distance_traveled)
             current_time += 1
 
