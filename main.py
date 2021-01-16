@@ -2,6 +2,15 @@ import math
 import random
 
 
+class Point(object):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __str__(self):
+        return f"({self.x}, {self.y})"
+
+
 class Segment(object):
     def __init__(self, start_point, end_point):
         self.start_point = start_point
@@ -16,70 +25,66 @@ class Segment(object):
                          + abs(self.end_point.y - self.start_point.y) ** 2)
 
 
-class Point(object):
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def __str__(self):
-        return f"({self.x}, {self.y})"
-
-
 class Drunk(object):
-    possibilites = ['N', 'S', 'E', 'W']
 
-    def __init__(self, start_loc):
-        self.start_loc = start_loc
+    def __init__(self, start_point):
+        self.drunk_loc = start_point
+        self.possibilites = ['N', 'S', 'E', 'W']
 
-    def rand_move(self, point):
-        x = point.x
-        y = point.y
-        randmove = random.choice(self.possibilites)
-        if randmove == 'N':
-            return Point(x, y + 1)
-        elif randmove == 'S':
-            return Point(x, y - 1)
-        elif randmove == 'E':
-            return Point(x + 1, y)
-        else:  # must be W
-            return Point(x - 1, y)
+    def randmove(self, point):
+        new_x = point.x
+        new_y = point.y
+        rand_move = random.choice(self.possibilites)
+        if rand_move == self.possibilites[0]:
+            new_y = new_y + 1
+        elif rand_move == self.possibilites[1]:
+            new_y = new_y - 1
+        elif rand_move == self.possibilites[2]:
+            new_x = new_x + 1
+        else:  # must be last possibility, self.possibilites[3]
+            new_x = new_x - 1
+        self.drunk_loc = Point(new_x, new_y)
+
+    def __getattribute__(self, drunk_loc):
+        return object.__getattribute__(self, drunk_loc)
+
+
+class Field(object):
+
+    def __init__(self, drunk):
+        self.start_loc = drunk.drunk_loc
+
+    def getdistance(self, start_loc, new_loc):
+        distance = Segment(start_loc, new_loc).length()
+        return distance
 
     def __getattribute__(self, start_loc):
         return object.__getattribute__(self, start_loc)
 
 
-class Field(object):
-    distances = []
+class Trial(object):
 
-    def __init__(self, drunk):
-        self.drunk = drunk
-        self.start_loc = drunk.start_loc
-        self.curr_loc = self.start_loc
+    def __init__(self, time, start_point=Point(0, 0)):
+        self.drunk = Drunk(start_point)
+        self.field = Field(self.drunk)
+        self.time = time
+        self.distances = []
 
-    def calc_dist_from_start(self, curr_loc):
-        self.curr_loc = curr_loc
-        distancetravel = Segment(self.start_loc, self.curr_loc).length()
-        self.distances.append(distancetravel)
+    def perform_trial(self):
+        current_time = 0
+        start_loc = self.field.start_loc
+        while current_time < self.time:
+            self.drunk.randmove(self.drunk.drunk_loc)
+            drunk_loc = self.drunk.drunk_loc
+            distancetravel = self.field.getdistance(start_loc, drunk_loc)
+            self.distances.append(distancetravel)
+            current_time += 1
 
-    def __getattribute__(self, distances):
-        return object.__getattribute__(self, distances)
-
-
-def perform_trial(time, num_trials):
-    start_location = Point(0, 0)
-    drunk = Drunk(start_location)
-    field = Field(drunk)
-    current_location = drunk.rand_move(start_location)
-    for t in range(time):
-        field.calc_dist_from_start(current_location)
-        current_location = drunk.rand_move(field.curr_loc)
-    print(field.distances)
+    def print_result(self):
+        print(self.distances)
 
 
 if __name__ == '__main__':
-    # point1 = Point(0, 6)
-    # point2 = Point(2, 8)
-    # segment1 = Segment(point1, point2)
-    # print(segment1)
-    # print(segment1.length())
-    perform_trial(5, 3)
+    trial = Trial(5)
+    trial.perform_trial()
+    trial.print_result()
