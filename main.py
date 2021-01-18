@@ -7,6 +7,9 @@ class Point(object):
         self.x = x
         self.y = y
 
+    def __setattr__(self, x, y):
+        return object.__setattr__(self, x, y)
+
     def __str__(self):
         return f"({self.x}, {self.y})"
 
@@ -26,52 +29,53 @@ class Segment(object):
 
 
 class Drunk(object):
-    def __init__(self, start_point):
-        self.drunk_loc = start_point
-        self.possibilites = ['N', 'S', 'E', 'W']
+    possibilites = ['N', 'S', 'E', 'W']
 
-    def randmove(self, new_point):
-        new_x = new_point.x
-        new_y = new_point.y
+    def __init__(self, start_point):
+        self.location = start_point
+
+    def randmove(self, dist):
+        new_x = self.location.x
+        new_y = self.location.y
         rand_move = random.choice(self.possibilites)
         if rand_move == self.possibilites[0]:
-            new_y = new_y + 1
+            new_y = new_y + dist
         elif rand_move == self.possibilites[1]:
-            new_y = new_y - 1
+            new_y = new_y - dist
         elif rand_move == self.possibilites[2]:
-            new_x = new_x + 1
+            new_x = new_x + dist
         else:  # must be last possibility, self.possibilites[3]
-            new_x = new_x - 1
-        self.drunk_loc = Point(new_x, new_y)
+            new_x = new_x - dist
+        self.location = Point(new_x, new_y)
 
-    def __getattribute__(self, drunk_loc):
-        return object.__getattribute__(self, drunk_loc)
+    def __getattribute__(self, location):
+        return object.__getattribute__(self, location)
 
 
 class Field(object):
     def __init__(self, drunk):
-        self.start_loc = drunk.drunk_loc
+        self.start_location = drunk.location
 
-    def getdistance(self, new_loc):
-        distance = Segment(self.start_loc, new_loc).length()
+    def getdistance(self, end_location):
+        distance = Segment(self.start_location, end_location).length()
         return distance
 
-    def __getattribute__(self, start_loc):
-        return object.__getattribute__(self, start_loc)
+    def __getattribute__(self, start_location):
+        return object.__getattribute__(self, start_location)
 
 
 class Trial(object):
     def __init__(self, alloted_time, start_point=Point(0, 0)):
+        self.alloted_time = alloted_time
         self.drunk = Drunk(start_point)
         self.field = Field(self.drunk)
-        self.alloted_time = alloted_time
         self.distances = []
 
     def performtrial(self):
         current_time = 0
         while current_time < self.alloted_time:
-            self.drunk.randmove(self.drunk.drunk_loc)
-            distance_traveled = self.field.getdistance(self.drunk.drunk_loc)
+            self.drunk.randmove(1)
+            distance_traveled = self.field.getdistance(self.drunk.location)
             self.distances.append(distance_traveled)
             current_time += 1
 
