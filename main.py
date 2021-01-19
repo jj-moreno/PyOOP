@@ -31,21 +31,22 @@ class Segment(object):
 class Drunk(object):
     possibilites = ['N', 'S', 'E', 'W']
 
-    def __init__(self, start_point):
+    def __init__(self, start_point, step_length):
         self.location = start_point
+        self.step_length = step_length
 
-    def randmove(self, dist):
+    def randmove(self):
         new_x = self.location.x
         new_y = self.location.y
         rand_move = random.choice(self.possibilites)
         if rand_move == self.possibilites[0]:
-            new_y = new_y + dist
+            new_y = new_y + self.step_length
         elif rand_move == self.possibilites[1]:
-            new_y = new_y - dist
+            new_y = new_y - self.step_length
         elif rand_move == self.possibilites[2]:
-            new_x = new_x + dist
+            new_x = new_x + self.step_length
         else:  # must be last possibility, self.possibilites[3]
-            new_x = new_x - dist
+            new_x = new_x - self.step_length
         self.location = Point(new_x, new_y)
 
     def __getattribute__(self, location):
@@ -56,10 +57,6 @@ class Field(object):
     def __init__(self, drunk):
         self.start_location = drunk.location
 
-    def getdistance(self, end_location):
-        distance = Segment(self.start_location, end_location).length()
-        return distance
-
     def __getattribute__(self, start_location):
         return object.__getattribute__(self, start_location)
 
@@ -67,15 +64,19 @@ class Field(object):
 class Trial(object):
     def __init__(self, alloted_time, start_point=Point(0, 0)):
         self.alloted_time = alloted_time
-        self.drunk = Drunk(start_point)
+        self.drunk = Drunk(start_point, 1)
         self.field = Field(self.drunk)
         self.distances = []
+
+    def getdistance(self):
+        segment = Segment(self.field.start_location, self.drunk.location)
+        return segment.length()
 
     def performtrial(self):
         current_time = 0
         while current_time < self.alloted_time:
-            self.drunk.randmove(1)
-            distance_traveled = self.field.getdistance(self.drunk.location)
+            self.drunk.randmove()
+            distance_traveled = self.getdistance()
             self.distances.append(distance_traveled)
             current_time += 1
 
