@@ -1,6 +1,6 @@
 import math
 import random
-
+import matplotlib.pyplot as pylab
 
 class Point(object):
     def __init__(self, x, y):
@@ -89,3 +89,5 @@ if __name__ == '__main__':
     trial = Trial(time_in_secs)
     trial.performtrial()
     trial.printresult()
+    pylab.plot(trial.distances)
+    pylab.show()
