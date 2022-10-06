@@ -2,6 +2,7 @@ import math
 import random
 import matplotlib.pyplot as pylab
 
+
 class Point(object):
     def __init__(self, x, y):
         self.x = x
@@ -90,4 +91,7 @@ if __name__ == '__main__':
     trial.performtrial()
     trial.printresult()
     pylab.plot(trial.distances)
+    pylab.title('Random Walk')
+    pylab.xlabel('Time')
+    pylab.ylabel('Distance From Origin')
     pylab.show()
