@@ -67,7 +67,7 @@ class Trial(object):
         self.alloted_time = alloted_time
         self.drunk = Drunk(start_point, 1)
         self.field = Field(self.drunk)
-        self.distances = []
+        self.distances = [0]
 
     def getdistance(self):
         segment = Segment(self.field.start_location, self.drunk.location)
